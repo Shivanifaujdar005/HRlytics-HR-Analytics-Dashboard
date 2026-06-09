@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Attendance File</title>
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .upload-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 6px 24px rgba(32, 56, 108, 0.15);
+            width: 320px;
+            text-align: center;
+        }
+
+        .upload-container h2 {
+            margin-bottom: 1.5rem;
+            color: #23408e;
+        }
+
+        .upload-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upload-container input[type="file"] {
+            margin-bottom: 1rem;
+            padding: 0.4rem;
+        }
+
+        .upload-container button {
+            padding: 0.6rem 0.75rem;
+            background: #23408e;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upload-container button:hover {
+            background: #10234f;
+        }
+
+        .message {
+            color: #228B22;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+<div class="upload-container">
+    <h2>Upload Attendance File</h2>
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+
+        {% if message %}
+    <div class="message">{{ message }}</div>
+{% endif %}
+
+
+
+{% if show_analytics %}
+    <a href="{% url 'attendance_analytics' %}">
+        <button type="button" style="margin-top: 18px; background: linear-gradient(90deg,#376AFE,#6de0fc); color: #fff; border:none; border-radius:8px; padding: .5rem 1.4rem; font-weight:600; font-size:1.07rem; cursor:pointer; box-shadow:0 2px 10px #3477cc23;">
+            View Attendance Analytics
+        </button>
+    </a>
+{% endif %}
+
+
+
+    </form>
+    <br>
+    <a href="{% url 'home' %}">&#8592; Back to Dashboard</a>
+</div>
+</body>
+</html>

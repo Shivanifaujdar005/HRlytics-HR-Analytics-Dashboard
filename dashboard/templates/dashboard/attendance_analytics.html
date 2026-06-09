@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .table { border-collapse: collapse; width: 90%; margin-top: 1.5rem; }
+        .table th, .table td { border: 1px solid #2356ae; padding: 0.4rem 0.9rem;}
+        .table th { background: #23408e; color: #fff;}
+    </style>
+</head>
+<body>
+    <h2>Attendance Data Preview</h2>
+    {% if table_html %}
+        <div>{{ table_html|safe }}</div>
+    {% else %}
+        <p>No file uploaded yet.</p>
+    {% endif %}
+
+    <h3>Attendance Summary</h3>
+    {% if summary %}
+        <ul>
+            {% for row in summary %}
+                <li><b>{{ row.Employee }}</b>: {{ row.Days_Present }}</li>
+            {% endfor %}
+        </ul>
+
+        <div style="display: flex; justify-content: center;">
+  <canvas id="attendanceChart" width="320" height="155" style="background: #f6f8fc; border-radius: 14px; box-shadow: 0 2px 18px #23408e22;"></canvas>
+</div>
+
+        <script>
+var ctx = document.getElementById('attendanceChart').getContext('2d');
+var gradient = ctx.createLinearGradient(0, 0, 0, 180);
+gradient.addColorStop(0, '#4575F5');
+gradient.addColorStop(1, '#83D0FB');
+
+var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ chart_data.labels|safe }},
+        datasets: [{
+            label: 'Days Present',
+            data: {{ chart_data.values|safe }},
+            backgroundColor: gradient,
+            borderRadius: 8,
+            hoverBackgroundColor: '#2240ae'
+        }]
+    },
+    options: {
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            x: {
+                ticks: { color: '#2456ae', font: { weight: 'bold' } },
+                grid: { display: false }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { color: '#2456ae' },
+                grid: { color: '#a3bbf933' }
+            }
+        },
+        layout: { padding: 8 },
+        responsive: false
+    }
+});
+</script>
+
+    {% else %}
+        <p>No summary available (check your CSV columns).</p>
+    {% endif %}
+   <div style="display: flex; gap: 1.2rem; margin-top: 1.6rem;">
+    <a href="{% url 'upload_attendance' %}">
+        <button type="button" style="background: linear-gradient(90deg,#376AFE,#6de0fc); color: #fff; border:none; border-radius:8px; padding: .5rem 1.4rem; font-weight:600; font-size:1.05rem; cursor:pointer; box-shadow:0 2px 10px #3477cc23;">
+            Upload New Attendance File
+        </button>
+    </a>
+    <a href="{% url 'home' %}">
+        <button type="button" style="background: #f6f8fc; color: #23408e; border:none; border-radius:8px; padding: .5rem 1.4rem; font-weight:600; font-size:1.05rem; cursor:pointer; box-shadow:0 2px 10px #3477cc20;">
+            &#8592; Back to Dashboard
+        </button>
+    </a>
+</div>
+</body>
+</html>

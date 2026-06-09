@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Performance Review Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      .chart-row { display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem; }
+      .chart-card {
+        flex: 1; min-width: 330px; background: #f6f8fc;
+        border-radius: 15px; box-shadow: 0 2px 18px #fa709a22; padding: 1rem;
+      }
+      .message { font-weight: bold; color: #126; margin-top: 1rem; }
+      button {
+        margin-top: 18px; background: linear-gradient(90deg,#fa709a,#fee140);
+        color: #fff; border:none; border-radius:8px; padding: .5rem 1.4rem;
+        font-weight:600; font-size:1.07rem; cursor:pointer; box-shadow:0 2px 10px #fa709a23;
+      }
+    </style>
+</head>
+<body>
+  <h3>Performance Review Data Preview</h3>
+  {% if table_html %}
+    <div>{{ table_html|safe }}</div>
+  {% else %}
+    <p>No file uploaded yet.</p>
+  {% endif %}
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <h4 style="text-align:center;">Average Score per Employee (Bar)</h4>
+      <canvas id="barChart" width="320" height="180"></canvas>
+    </div>
+    <div class="chart-card">
+      <h4 style="text-align:center;">Reviews Over Time (Line)</h4>
+      <canvas id="lineChart" width="320" height="180"></canvas>
+    </div>
+    <div class="chart-card">
+      <h4 style="text-align:center;">Score Distribution (Histogram)</h4>
+      <canvas id="histogramChart" width="320" height="180"></canvas>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 1.2rem; margin-top: 2.2rem;">
+    <a href="{% url 'upload_performance_review' %}">
+      <button type="button">Upload New Performance Review File</button>
+    </a>
+    <a href="{% url 'home' %}">
+      <button type="button" style="background:#f6f8fc;color:#23408e;border:none;box-shadow:0 2px 10px #fa709a13;">&#8592; Back to Dashboard</button>
+    </a>
+  </div>
+
+  <script>
+    // Chart data from Django context
+    var barLabels = {{ chart_data.bar_labels|safe }};
+    var barValues = {{ chart_data.bar_values|safe }};
+    var lineLabels = {{ chart_data.line_labels|safe }};
+    var lineValues = {{ chart_data.line_values|safe }};
+    var histLabels = {{ chart_data.hist_labels|safe }};
+    var histValues = {{ chart_data.hist_values|safe }};
+
+    // Bar Chart
+    var ctx1 = document.getElementById('barChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: barLabels,
+        datasets: [{
+          label: 'Avg/Total Score',
+          data: barValues,
+          backgroundColor: 'rgba(250,112,154,0.7)',
+          borderColor: '#fee140',
+          borderWidth: 2,
+          borderRadius: 8,
+        }]
+      },
+      options: { plugins: { legend: { display: false }}, responsive: false }
+    });
+
+    // Line Chart
+    var ctx2 = document.getElementById('lineChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: lineLabels,
+        datasets: [{
+          label: 'Reviews Over Time',
+          data: lineValues,
+          backgroundColor: 'rgba(250,112,154,0.25)',
+          borderColor: '#fee140',
+          tension: 0.29,
+          borderWidth: 2,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: '#fa709a',
+        }]
+      },
+      options: { plugins: { legend: { display: false }}, responsive: false }
+    });
+
+    // Histogram
+    var ctx3 = document.getElementById('histogramChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: histLabels,
+        datasets: [{
+          label: 'Score Distribution',
+          data: histValues,
+          backgroundColor: 'rgba(250,112,154,0.2)',
+          borderColor: '#fee140',
+          borderWidth: 2,
+          borderRadius: 8,
+        }]
+      },
+      options: { plugins: { legend: { display: false }}, responsive: false }
+    });
+  </script>
+</body>
+</html>

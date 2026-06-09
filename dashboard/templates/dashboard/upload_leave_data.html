@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Leave Data</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fc; margin: 0; }
+        .container { margin: 4rem auto 0 auto; background: #fff; border-radius: 12px; box-shadow:0 4px 18px #2357af18; padding:2.5rem 3rem; max-width:370px;}
+        h2 { color: #2456ae; margin-bottom:1.1rem;}
+        .message { color: #27854f; margin-bottom: 1.2rem; }
+        button { background:#2456ae; color:#fff; padding:0.5rem 1.25rem; border-radius:6px; border:none; font-weight:600; font-size:1.05rem; margin-top:1.3rem;}
+        button:hover { background:#1350b1;}
+        a { display:block; margin-top:1.7rem; color:#2456ae; text-decoration:underline;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Upload Leave Data File</h2>
+    {% if message %}<div class="message">{{ message }}</div>{% endif %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'home' %}">&#8592; Back to Dashboard</a>
+</div>
+</body>
+</html>

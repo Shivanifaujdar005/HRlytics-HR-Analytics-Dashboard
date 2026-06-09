@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Work Submission Analytics</title>
+</head>
+<body>
+    <h2>Work Submission Data Preview</h2>
+    {% if table_html %}
+        <div>{{ table_html|safe }}</div>
+    {% else %}
+        <p>No file uploaded yet.</p>
+    {% endif %}
+
+
+    <!-- Chart.js CDN (include once in the <head> section) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="display: flex; flex-wrap: wrap; gap: 2.5rem; margin-top: 2rem;">
+  <!-- Bar Chart -->
+  <div style="flex: 1; min-width: 330px; background: #f6f8fc; border-radius: 15px; box-shadow: 0 2px 18px #00c6fb22; padding: 1rem;">
+    <h4 style="text-align:center;">Submissions per Employee (Bar)</h4>
+    <canvas id="barChart" width="320" height="180"></canvas>
+  </div>
+  <!-- Line Chart -->
+  <div style="flex: 1; min-width: 330px; background: #f6f8fc; border-radius: 15px; box-shadow: 0 2px 18px #00c6fb22; padding: 1rem;">
+    <h4 style="text-align:center;">Submissions Over Time (Line)</h4>
+    <canvas id="lineChart" width="320" height="180"></canvas>
+  </div>
+  <!-- Histogram -->
+  <div style="flex: 1; min-width: 330px; background: #f6f8fc; border-radius: 15px; box-shadow: 0 2px 18px #00c6fb22; padding: 1rem;">
+    <h4 style="text-align:center;">Distribution (Histogram)</h4>
+    <canvas id="histogramChart" width="320" height="180"></canvas>
+  </div>
+</div>
+
+<script>
+  var barLabels = {{ chart_data.bar_labels|safe }};
+  var barValues = {{ chart_data.bar_values|safe }};
+  var lineLabels = {{ chart_data.line_labels|safe }};
+  var lineValues = {{ chart_data.line_values|safe }};
+  var histLabels = {{ chart_data.hist_labels|safe }};
+  var histValues = {{ chart_data.hist_values|safe }};
+
+  // Bar Chart
+  var ctx1 = document.getElementById('barChart').getContext('2d');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: barLabels,
+      datasets: [{
+        label: 'Total Submissions',
+        data: barValues,
+        backgroundColor: 'rgba(0,198,251,0.7)',
+        borderColor: '#005bea',
+        borderWidth: 2,
+        borderRadius: 8,
+      }]
+    },
+    options: { plugins: { legend: { display: false }}, responsive: false }
+  });
+
+  // Line chart
+  var ctx2 = document.getElementById('lineChart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: lineLabels,
+      datasets: [{
+        label: 'Submissions Over Time',
+        data: lineValues,
+        backgroundColor: 'rgba(0,198,251,0.25)',
+        borderColor: '#005bea',
+        tension: 0.29,
+        borderWidth: 2,
+        fill: true,
+        pointRadius: 4,
+        pointBackgroundColor: '#005bea',
+      }]
+    },
+    options: { plugins: { legend: { display: false }}, responsive: false }
+  });
+
+  // Histogram
+  var ctx3 = document.getElementById('histogramChart').getContext('2d');
+  new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: histLabels,
+      datasets: [{
+        label: 'Hours Spent (distribution)',
+        data: histValues,
+        backgroundColor: 'rgba(0,198,251,0.25)',
+        borderColor: '#005bea',
+        borderWidth: 2,
+        borderRadius: 8,
+      }]
+    },
+    options: { plugins: { legend: { display: false }}, responsive: false }
+  });
+</script>
+
+
+
+    <div style="display: flex; gap: 1.2rem; margin-top: 1.6rem;">
+        <a href="{% url 'upload_work_submission' %}">
+            <button type="button" style="background: linear-gradient(90deg,#00c6fb,#005bea); color: #fff; border:none; border-radius:8px; padding: .5rem 1.4rem; font-weight:600; font-size:1.05rem; cursor:pointer; box-shadow:0 2px 10px #155ac623;">
+                Upload New Work Submission File
+            </button>
+        </a>
+        <a href="{% url 'home' %}">
+            <button type="button" style="background: #f6f8fc; color: #23408e; border:none; border-radius:8px; padding: .5rem 1.4rem; font-weight:600; font-size:1.05rem; cursor:pointer; box-shadow:0 2px 10px #3477cc20;">
+                &#8592; Back to Dashboard
+            </button>
+        </a>
+    </div>
+</body>
+</html>
